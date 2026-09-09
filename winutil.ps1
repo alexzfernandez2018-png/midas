@@ -4,29 +4,30 @@
 # Sleek Metallic Edition
 # ============================================================
 
-# ── Admin Verification ──
-$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-if (-not $isAdmin) {
-    [System.Windows.Forms.MessageBox]::Show(
-        "Administrator privileges required. Please launch PowerShell as Administrator and run the utility again.",
-        "MIDAS",
-        [System.Windows.Forms.MessageBoxButtons]::OK,
-        [System.Windows.Forms.MessageBoxIcon]::Warning
-    ) | Out-Null
-    exit
-}
+try {
+    # ── Admin Verification ──
+    $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (-not $isAdmin) {
+        [System.Windows.Forms.MessageBox]::Show(
+            "Administrator privileges required. Please launch PowerShell as Administrator and run the utility again.",
+            "MIDAS",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Warning
+        ) | Out-Null
+        exit
+    }
 
-# ── Load Assemblies ──
-Add-Type -AssemblyName PresentationFramework
-Add-Type -AssemblyName PresentationCore
-Add-Type -AssemblyName WindowsBase
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
+    # ── Load Assemblies ──
+    Add-Type -AssemblyName PresentationFramework
+    Add-Type -AssemblyName PresentationCore
+    Add-Type -AssemblyName WindowsBase
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
 
-# ============================================================
-# XAML GUI DEFINITION
-# ============================================================
-[xml]$XAML = @"
+    # ============================================================
+    # XAML GUI DEFINITION
+    # ============================================================
+    [xml]$XAML = @"
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -141,7 +142,7 @@ Add-Type -AssemblyName System.Drawing
         <!-- TOP BAR -->
         <Border Grid.Row="0" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,0,0,1" Padding="20,12">
             <Grid>
-                <TextBlock Text="M I D A S" FontSize="18" FontWeight="Bold" Foreground="#c5a059"/>
+                <TextBlock Text="MIDAS" FontSize="18" FontWeight="Bold" Foreground="#c5a059"/>
                 <TextBlock Text="v3.0" FontSize="11" Foreground="#3d3118" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </Grid>
         </Border>
@@ -383,210 +384,221 @@ Add-Type -AssemblyName System.Drawing
         <Border Grid.Row="2" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,1,0,0" Padding="16,8">
             <Grid>
                 <TextBlock x:Name="txtStatus" Text="Ready" FontSize="11.5" Foreground="#705b30" VerticalAlignment="Center"/>
-                <ProgressBar x:Name="progressBar" Width="180" Height="10" HorizontalAlignment="Right" Background="#120e0a" Foreground="#c5a059" Value="0" Visibility="Hidden"/>
             </Grid>
         </Border>
     </Grid>
 </Window>
 "@
 
-# ============================================================
-# LOAD GUI & REALISTIC LIQUID GOLD ANIMATION ENGINE
-# ============================================================
-$reader = (New-Object System.Xml.XmlNodeReader $XAML)
-$window = [Windows.Markup.XamlReader]::Load($reader)
+    # ============================================================
+    # LOAD GUI & SAFE ANIMATION ENGINE
+    # ============================================================
+    $reader = New-Object System.Xml.XmlNodeReader $XAML
+    $window = [Windows.Markup.XamlReader]::Load($reader)
 
-# Map XAML controls
-$XAML.SelectNodes("//*[@*[contains(translate(name(),'x','X'),'Name')]]") | ForEach-Object {
-    Set-Variable -Name ($_.Name) -Value $window.FindName($_.Name) -Scope Script
-}
+    # Safe Element Selector
+    function Get-UI([string]$name) {
+        return $window.FindName($name)
+    }
 
-# ── Real-Time Fluid Liquid Gold Animation ──
-$liquidBrush = $window.FindName("LiquidGoldBrush")
-if ($liquidBrush) {
-    # Animate gradient StartPoint (wave movement)
-    $animStart = New-Object System.Windows.Media.Animation.PointAnimation
-    $animStart.From = New-Object System.Windows.Point(0, 0)
-    $animStart.To = New-Object System.Windows.Point(0.8, 0.5)
-    $animStart.Duration = New-Object System.Windows.Duration([TimeSpan]::FromSeconds(8))
-    $animStart.AutoReverse = $true
-    $animStart.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
-
-    # Animate gradient EndPoint
-    $animEnd = New-Object System.Windows.Media.Animation.PointAnimation
-    $animEnd.From = New-Object System.Windows.Point(1, 1)
-    $animEnd.To = New-Object System.Windows.Point(0.2, 0.5)
-    $animEnd.Duration = New-Object System.Windows.Duration([TimeSpan]::FromSeconds(8))
-    $animEnd.AutoReverse = $true
-    $animEnd.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
-
-    $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::StartPointProperty, $animStart)
-    $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::EndPointProperty, $animEnd)
-}
-
-# ============================================================
-# BACKEND LOGIC
-# ============================================================
-
-function Set-RegDword {
-    param([string]$Path, [string]$Name, [int]$Value)
+    # Safe Liquid Gold Animation
     try {
-        if (-not (Test-Path $Path)) { New-Item -Path $Path -Force | Out-Null }
-        Set-ItemProperty -Path $Path -Name $Name -Value $Value -Type DWord -Force
+        $liquidBrush = Get-UI "LiquidGoldBrush"
+        if ($liquidBrush) {
+            $animStart = New-Object System.Windows.Media.Animation.PointAnimation
+            $animStart.From = New-Object System.Windows.Point(0, 0)
+            $animStart.To = New-Object System.Windows.Point(0.8, 0.5)
+            $animStart.Duration = [TimeSpan]::FromSeconds(8)
+            $animStart.AutoReverse = $true
+            $animStart.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
+
+            $animEnd = New-Object System.Windows.Media.Animation.PointAnimation
+            $animEnd.From = New-Object System.Windows.Point(1, 1)
+            $animEnd.To = New-Object System.Windows.Point(0.2, 0.5)
+            $animEnd.Duration = [TimeSpan]::FromSeconds(8)
+            $animEnd.AutoReverse = $true
+            $animEnd.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
+
+            $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::StartPointProperty, $animStart)
+            $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::EndPointProperty, $animEnd)
+        }
     } catch {}
-}
 
-function Update-Status([string]$msg) {
-    $txtStatus.Dispatcher.Invoke([action]{ $txtStatus.Text = $msg })
-}
+    # ============================================================
+    # BACKEND LOGIC
+    # ============================================================
 
-# Hardware specs loader
-$window.Add_Loaded({
-    try {
-        $os = Get-CimInstance Win32_OperatingSystem
-        $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-        $ram = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
-        $gpu = (Get-CimInstance Win32_VideoController | Select-Object -First 1).Name
-        $txtSysInfo.Text = "OS: $($os.Caption) ($($os.OSArchitecture))`nCPU: $($cpu.Name)`nRAM: $ram GB`nGPU: $gpu"
-    } catch {
-        $txtSysInfo.Text = "System information loaded."
-    }
-})
-
-# App Installer via WinGet
-$AppMap = @{
-    chkChrome = "Google.Chrome"; chkFirefox = "Mozilla.Firefox"; chkBrave = "Brave.Brave"
-    chkEdge = "Microsoft.Edge"; chkOperaGX = "Opera.OperaGX"; chkDiscord = "Discord.Discord"
-    chkTelegram = "Telegram.TelegramDesktop"; chkWhatsApp = "WhatsApp.WhatsApp"; chkZoom = "Zoom.Zoom"
-    chkVSCode = "Microsoft.VisualStudioCode"; chkGit = "Git.Git"; chkNodeJS = "OpenJS.NodeJS.LTS"
-    chkPython = "Python.Python.3.12"; chkTerminal = "Microsoft.WindowsTerminal"
-    chkPowerShell7 = "Microsoft.PowerShell"; chkDocker = "Docker.DockerDesktop"
-    chkNotepadPP = "Notepad++.Notepad++"; chkVLC = "VideoLAN.VLC"; chkSpotify = "Spotify.Spotify"
-    chkOBS = "OBSProject.OBSStudio"; chkGIMP = "GIMP.GIMP"; chkShareX = "ShareX.ShareX"
-    chkHandbrake = "HandBrake.HandBrake"; "chk7Zip" = "7zip.7zip"; chkWinRAR = "RARLab.WinRAR"
-    chkPowerToys = "Microsoft.PowerToys"; chkEverything = "voidtools.Everything"
-    chkBitwarden = "Bitwarden.Bitwarden"; chkSteam = "Valve.Steam"
-}
-
-$btnInstallApps.Add_Click({
-    $selected = @()
-    foreach ($key in $AppMap.Keys) {
-        $box = $window.FindName($key)
-        if ($box -and $box.IsChecked) { $selected += $AppMap[$key] }
-    }
-    
-    if ($selected.Count -eq 0) {
-        [System.Windows.MessageBox]::Show("Select at least one application.", "MIDAS", "OK", "Information")
-        return
+    function Set-RegDword {
+        param([string]$Path, [string]$Name, [int]$Value)
+        try {
+            if (-not (Test-Path $Path)) { New-Item -Path $Path -Force | Out-Null }
+            Set-ItemProperty -Path $Path -Name $Name -Value $Value -Type DWord -Force
+        } catch {}
     }
 
-    $window.IsEnabled = $false
-    foreach ($app in $selected) {
-        Update-Status "Installing $app..."
-        winget install --id $app --silent --accept-package-agreements --accept-source-agreements --exact
-    }
-    $window.IsEnabled = $true
-    Update-Status "Application installation task completed."
-    [System.Windows.MessageBox]::Show("Selected applications installed successfully.", "MIDAS", "OK", "Information")
-})
-
-$btnSelectAllApps.Add_Click({ foreach ($key in $AppMap.Keys) { ($window.FindName($key)).IsChecked = $true } })
-$btnDeselectApps.Add_Click({ foreach ($key in $AppMap.Keys) { ($window.FindName($key)).IsChecked = $false } })
-
-# Tweaks Logic
-$btnApplyTweaks.Add_Click({
-    $window.IsEnabled = $false
-    Update-Status "Applying selected system tweaks..."
-
-    if ($twkHighPerf.IsChecked) { powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c }
-    if ($twkDisableTelemetry.IsChecked) {
-        Set-RegDword "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
-        Stop-Service DiagTrack -ErrorAction SilentlyContinue
-        Set-Service DiagTrack -StartupType Disabled -ErrorAction SilentlyContinue
-    }
-    if ($twkDisableGameBar.IsChecked) {
-        Set-RegDword "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR" "AppCaptureEnabled" 0
-        Set-RegDword "HKCU:\System\GameConfigStore" "GameDVR_Enabled" 0
-    }
-    if ($twkDisableHibernation.IsChecked) { powercfg -h off }
-    if ($twkDisableAds.IsChecked) { Set-RegDword "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0 }
-    if ($twkShowFileExt.IsChecked) { Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0 }
-    if ($twkShowHidden.IsChecked) { Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Hidden" 1 }
-    if ($twkDarkMode.IsChecked) {
-        Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
-        Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
-    }
-    if ($twkClassicRightClick.IsChecked) {
-        New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Force | Out-Null
-        Set-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(Default)" -Value "" -Force
-    }
-
-    $window.IsEnabled = $true
-    Update-Status "Tweaks successfully applied."
-    [System.Windows.MessageBox]::Show("System tweaks applied.", "MIDAS", "OK", "Information")
-})
-
-$btnSelectRecommendedTweaks.Add_Click({
-    $twkHighPerf.IsChecked = $true
-    $twkDisableTelemetry.IsChecked = $true
-    $twkDisableAds.IsChecked = $true
-    $twkShowFileExt.IsChecked = $true
-    $twkDarkMode.IsChecked = $true
-})
-
-# Debloat Logic
-$BloatMap = @{
-    db3DViewer = "*3DViewer*"; dbBingNews = "*BingNews*"; dbFeedbackHub = "*WindowsFeedbackHub*"
-    dbGetHelp = "*GetHelp*"; dbMaps = "*WindowsMaps*"; dbSolitaire = "*SolitaireCollection*"
-    dbMixedReality = "*MixedReality.Portal*"; dbOfficeHub = "*MicrosoftOfficeHub*"
-    dbSkype = "*SkypeApp*"; dbYourPhone = "*YourPhone*"; dbXboxApps = "*Xbox*"
-    dbZune = "*Zune*"
-}
-
-$btnRemoveDebloat.Add_Click({
-    $window.IsEnabled = $false
-    foreach ($key in $BloatMap.Keys) {
-        $box = $window.FindName($key)
-        if ($box -and $box.IsChecked) {
-            $pkg = $BloatMap[$key]
-            Update-Status "Removing $pkg..."
-            Get-AppxPackage -Name $pkg -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+    function Update-Status([string]$msg) {
+        $statusControl = Get-UI "txtStatus"
+        if ($statusControl) {
+            $statusControl.Dispatcher.Invoke([action]{ $statusControl.Text = $msg })
         }
     }
-    if ($dbOneDrive.IsChecked) {
-        Update-Status "Uninstalling OneDrive..."
-        taskkill /f /im OneDrive.exe 2>$null
-        if (Test-Path "$env:SystemRoot\System32\OneDriveSetup.exe") { & "$env:SystemRoot\System32\OneDriveSetup.exe" /uninstall }
+
+    # Hardware Specs Loader
+    $window.Add_Loaded({
+        try {
+            $os = Get-CimInstance Win32_OperatingSystem
+            $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+            $ram = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
+            $gpu = (Get-CimInstance Win32_VideoController | Select-Object -First 1).Name
+            (Get-UI "txtSysInfo").Text = "OS: $($os.Caption) ($($os.OSArchitecture))`nCPU: $($cpu.Name)`nRAM: $ram GB`nGPU: $gpu"
+        } catch {
+            (Get-UI "txtSysInfo").Text = "System information loaded."
+        }
+    })
+
+    # App Installer Map
+    $AppMap = @{
+        chkChrome = "Google.Chrome"; chkFirefox = "Mozilla.Firefox"; chkBrave = "Brave.Brave"
+        chkEdge = "Microsoft.Edge"; chkOperaGX = "Opera.OperaGX"; chkDiscord = "Discord.Discord"
+        chkTelegram = "Telegram.TelegramDesktop"; chkWhatsApp = "WhatsApp.WhatsApp"; chkZoom = "Zoom.Zoom"
+        chkVSCode = "Microsoft.VisualStudioCode"; chkGit = "Git.Git"; chkNodeJS = "OpenJS.NodeJS.LTS"
+        chkPython = "Python.Python.3.12"; chkTerminal = "Microsoft.WindowsTerminal"
+        chkPowerShell7 = "Microsoft.PowerShell"; chkDocker = "Docker.DockerDesktop"
+        chkNotepadPP = "Notepad++.Notepad++"; chkVLC = "VideoLAN.VLC"; chkSpotify = "Spotify.Spotify"
+        chkOBS = "OBSProject.OBSStudio"; chkGIMP = "GIMP.GIMP"; chkShareX = "ShareX.ShareX"
+        chkHandbrake = "HandBrake.HandBrake"; "chk7Zip" = "7zip.7zip"; chkWinRAR = "RARLab.WinRAR"
+        chkPowerToys = "Microsoft.PowerToys"; chkEverything = "voidtools.Everything"
+        chkBitwarden = "Bitwarden.Bitwarden"; chkSteam = "Valve.Steam"
     }
-    $window.IsEnabled = $true
-    Update-Status "Selected packages removed."
-    [System.Windows.MessageBox]::Show("Bloatware removal completed.", "MIDAS", "OK", "Information")
-})
 
-$btnSafeDebloat.Add_Click({
-    $db3DViewer.IsChecked = $true; $dbBingNews.IsChecked = $true; $dbFeedbackHub.IsChecked = $true
-    $dbGetHelp.IsChecked = $true; $dbSolitaire.IsChecked = $true; $dbMixedReality.IsChecked = $true
-})
+    (Get-UI "btnInstallApps").Add_Click({
+        $selected = @()
+        foreach ($key in $AppMap.Keys) {
+            $box = Get-UI $key
+            if ($box -and $box.IsChecked) { $selected += $AppMap[$key] }
+        }
+        
+        if ($selected.Count -eq 0) {
+            [System.Windows.MessageBox]::Show("Select at least one application.", "MIDAS", "OK", "Information")
+            return
+        }
 
-# System Commands
-$btnSFC.Add_Click({ Start-Process powershell -ArgumentList "-NoExit -Command sfc /scannow" -Verb RunAs })
-$btnDISM.Add_Click({ Start-Process powershell -ArgumentList "-NoExit -Command DISM /Online /Cleanup-Image /RestoreHealth" -Verb RunAs })
-$btnFlushDNS.Add_Click({ ipconfig /flushdns; Update-Status "DNS Cache Flushed." })
-$btnClearTemp.Add_Click({
-    Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Update-Status "Temporary files cleared."
-})
-$btnRestorePoint.Add_Click({
-    Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
-    Checkpoint-Computer -Description "MIDAS Restore Point" -RestorePointType MODIFY_SETTINGS
-    Update-Status "System restore point created."
-})
-$btnActivate.Add_Click({ Start-Process powershell -ArgumentList "-Command irm https://get.activated.win | iex" -Verb RunAs })
-$btnDiskCleanup.Add_Click({ Start-Process cleanmgr })
-$btnDevManager.Add_Click({ Start-Process devmgmt.msc })
-$btnServices.Add_Click({ Start-Process services.msc })
-$btnTaskMgr.Add_Click({ Start-Process taskmgr })
+        $window.IsEnabled = $false
+        foreach ($app in $selected) {
+            Update-Status "Installing $app..."
+            winget install --id $app --silent --accept-package-agreements --accept-source-agreements --exact
+        }
+        $window.IsEnabled = $true
+        Update-Status "Application installation task completed."
+        [System.Windows.MessageBox]::Show("Selected applications installed successfully.", "MIDAS", "OK", "Information")
+    })
 
-# Show Window
-Update-Status "Ready"
-$window.ShowDialog() | Out-Null
+    (Get-UI "btnSelectAllApps").Add_Click({ foreach ($key in $AppMap.Keys) { (Get-UI $key).IsChecked = $true } })
+    (Get-UI "btnDeselectApps").Add_Click({ foreach ($key in $AppMap.Keys) { (Get-UI $key).IsChecked = $false } })
+
+    # Tweaks
+    (Get-UI "btnApplyTweaks").Add_Click({
+        $window.IsEnabled = $false
+        Update-Status "Applying selected system tweaks..."
+
+        if ((Get-UI "twkHighPerf").IsChecked) { powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c }
+        if ((Get-UI "twkDisableTelemetry").IsChecked) {
+            Set-RegDword "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
+            Stop-Service DiagTrack -ErrorAction SilentlyContinue
+            Set-Service DiagTrack -StartupType Disabled -ErrorAction SilentlyContinue
+        }
+        if ((Get-UI "twkDisableGameBar").IsChecked) {
+            Set-RegDword "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR" "AppCaptureEnabled" 0
+            Set-RegDword "HKCU:\System\GameConfigStore" "GameDVR_Enabled" 0
+        }
+        if ((Get-UI "twkDisableHibernation").IsChecked) { powercfg -h off }
+        if ((Get-UI "twkDisableAds").IsChecked) { Set-RegDword "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0 }
+        if ((Get-UI "twkShowFileExt").IsChecked) { Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0 }
+        if ((Get-UI "twkShowHidden").IsChecked) { Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Hidden" 1 }
+        if ((Get-UI "twkDarkMode").IsChecked) {
+            Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
+            Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
+        }
+        if ((Get-UI "twkClassicRightClick").IsChecked) {
+            New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Force | Out-Null
+            Set-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(Default)" -Value "" -Force
+        }
+
+        $window.IsEnabled = $true
+        Update-Status "Tweaks successfully applied."
+        [System.Windows.MessageBox]::Show("System tweaks applied.", "MIDAS", "OK", "Information")
+    })
+
+    (Get-UI "btnSelectRecommendedTweaks").Add_Click({
+        (Get-UI "twkHighPerf").IsChecked = $true
+        (Get-UI "twkDisableTelemetry").IsChecked = $true
+        (Get-UI "twkDisableAds").IsChecked = $true
+        (Get-UI "twkShowFileExt").IsChecked = $true
+        (Get-UI "twkDarkMode").IsChecked = $true
+    })
+
+    # Debloat
+    $BloatMap = @{
+        db3DViewer = "*3DViewer*"; dbBingNews = "*BingNews*"; dbFeedbackHub = "*WindowsFeedbackHub*"
+        dbGetHelp = "*GetHelp*"; dbMaps = "*WindowsMaps*"; dbSolitaire = "*SolitaireCollection*"
+        dbMixedReality = "*MixedReality.Portal*"; dbOfficeHub = "*MicrosoftOfficeHub*"
+        dbSkype = "*SkypeApp*"; dbYourPhone = "*YourPhone*"; dbXboxApps = "*Xbox*"
+        dbZune = "*Zune*"
+    }
+
+    (Get-UI "btnRemoveDebloat").Add_Click({
+        $window.IsEnabled = $false
+        foreach ($key in $BloatMap.Keys) {
+            $box = Get-UI $key
+            if ($box -and $box.IsChecked) {
+                $pkg = $BloatMap[$key]
+                Update-Status "Removing $pkg..."
+                Get-AppxPackage -Name $pkg -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+            }
+        }
+        if ((Get-UI "dbOneDrive").IsChecked) {
+            Update-Status "Uninstalling OneDrive..."
+            taskkill /f /im OneDrive.exe 2>$null
+            if (Test-Path "$env:SystemRoot\System32\OneDriveSetup.exe") { & "$env:SystemRoot\System32\OneDriveSetup.exe" /uninstall }
+        }
+        $window.IsEnabled = $true
+        Update-Status "Selected packages removed."
+        [System.Windows.MessageBox]::Show("Bloatware removal completed.", "MIDAS", "OK", "Information")
+    })
+
+    (Get-UI "btnSafeDebloat").Add_Click({
+        (Get-UI "db3DViewer").IsChecked = $true
+        (Get-UI "dbBingNews").IsChecked = $true
+        (Get-UI "dbFeedbackHub").IsChecked = $true
+        (Get-UI "dbGetHelp").IsChecked = $true
+        (Get-UI "dbSolitaire").IsChecked = $true
+        (Get-UI "dbMixedReality").IsChecked = $true
+    })
+
+    # Repairs & Shortcuts
+    (Get-UI "btnSFC").Add_Click({ Start-Process powershell -ArgumentList "-NoExit -Command sfc /scannow" -Verb RunAs })
+    (Get-UI "btnDISM").Add_Click({ Start-Process powershell -ArgumentList "-NoExit -Command DISM /Online /Cleanup-Image /RestoreHealth" -Verb RunAs })
+    (Get-UI "btnFlushDNS").Add_Click({ ipconfig /flushdns; Update-Status "DNS Cache Flushed." })
+    (Get-UI "btnClearTemp").Add_Click({
+        Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+        Update-Status "Temporary files cleared."
+    })
+    (Get-UI "btnRestorePoint").Add_Click({
+        Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
+        Checkpoint-Computer -Description "MIDAS Restore Point" -RestorePointType MODIFY_SETTINGS
+        Update-Status "System restore point created."
+    })
+    (Get-UI "btnActivate").Add_Click({ Start-Process powershell -ArgumentList "-Command irm https://get.activated.win | iex" -Verb RunAs })
+    (Get-UI "btnDiskCleanup").Add_Click({ Start-Process cleanmgr })
+    (Get-UI "btnDevManager").Add_Click({ Start-Process devmgmt.msc })
+    (Get-UI "btnServices").Add_Click({ Start-Process services.msc })
+    (Get-UI "btnTaskMgr").Add_Click({ Start-Process taskmgr })
+
+    # Show Window
+    Update-Status "Ready"
+    $window.ShowDialog() | Out-Null
+
+} catch {
+    Write-Error "MIDAS Exception: $_"
+    [System.Windows.Forms.MessageBox]::Show("MIDAS Error: $_", "MIDAS Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error) | Out-Null
+}
