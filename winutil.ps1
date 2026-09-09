@@ -1,6 +1,6 @@
 #Requires -RunAsAdministrator
 
-# 1. Load Assemblies (Required for UI)
+# 1. Load Assemblies
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
 Add-Type -AssemblyName WindowsBase
@@ -9,11 +9,11 @@ try {
     # 2. Admin Verification
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if (-not $isAdmin) {
-        [System.Windows.MessageBox]::Show("Administrator privileges required. Please launch PowerShell as Administrator.", "MIDAS")
+        [System.Windows.MessageBox]::Show("Please run PowerShell as Administrator.", "MIDAS")
         exit
     }
 
-    # 3. XAML UI (Sleek Obsidian & Liquid Gold)
+    # 3. XAML UI (Clean, No Emojis, Sleek Gold)
     [xml]$XAML = @"
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -100,7 +100,10 @@ try {
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,0,0,1" Padding="25,15">
-            <TextBlock Text="MIDAS" FontSize="22" FontWeight="Bold" Foreground="#c5a059"/>
+            <Grid>
+                <TextBlock Text="MIDAS" FontSize="22" FontWeight="Bold" Foreground="#c5a059"/>
+                <TextBlock Text="v4.0" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#3d3118"/>
+            </Grid>
         </Border>
 
         <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="15">
@@ -138,7 +141,6 @@ try {
                     <StackPanel>
                         <CheckBox x:Name="twkDark" Content="System Dark Mode" IsChecked="True"/>
                         <CheckBox x:Name="twkExt" Content="Show File Extensions" IsChecked="True"/>
-                        <CheckBox x:Name="twkPerf" Content="High Performance Power Plan"/>
                         <CheckBox x:Name="twkClassic" Content="Classic Context Menu (Win 11)"/>
                         <Button x:Name="btnApply" Content="Apply Tweaks" Style="{StaticResource SleekButton}" Width="200" HorizontalAlignment="Left" Margin="0,20,0,0"/>
                     </StackPanel>
@@ -149,7 +151,6 @@ try {
                 <Border Background="#0a0805" BorderBrush="#241b0d" BorderThickness="1" Padding="20">
                     <WrapPanel>
                         <Button x:Name="btnSFC" Content="SFC Scan" Style="{StaticResource SleekButton}"/>
-                        <Button x:Name="btnDISM" Content="DISM Repair" Style="{StaticResource SleekButton}"/>
                         <Button x:Name="btnDNS" Content="Flush DNS" Style="{StaticResource SleekButton}"/>
                         <Button x:Name="btnAct" Content="Activate Windows" Style="{StaticResource SleekButton}" Background="#2b200d"/>
                     </WrapPanel>
@@ -164,33 +165,34 @@ try {
 </Window>
 "@
 
-    # 4. Load Window
+    # 4. Initialize Window
     $reader = New-Object System.Xml.XmlNodeReader $XAML
     $window = [Windows.Markup.XamlReader]::Load($reader)
 
-    # 5. Realistic Liquid Animation (Metallic Flow)
+    # 5. Liquid Gold Background Animation
     $brush = $window.FindName("LiquidGold")
-    $anim = New-Object System.Windows.Media.Animation.PointAnimation
-    $anim.From = "0,0"
-    $anim.To = "1,0.6"
-    $anim.Duration = [TimeSpan]::FromSeconds(10)
-    $anim.AutoReverse = $true
-    $anim.RepeatBehavior = "Forever"
-    $brush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::StartPointProperty, $anim)
+    if ($brush) {
+        $anim = New-Object System.Windows.Media.Animation.PointAnimation
+        $anim.From = "0,0"; $anim.To = "1,0.6"
+        $anim.Duration = [TimeSpan]::FromSeconds(10)
+        $anim.AutoReverse = $true; $anim.RepeatBehavior = "Forever"
+        $brush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::StartPointProperty, $anim)
+    }
 
-    # 6. Functional Logic
+    # 6. Button Events
     $window.FindName("btnSFC").Add_Click({ Start-Process powershell "-NoExit -Command sfc /scannow" -Verb RunAs })
-    $window.FindName("btnDNS").Add_Click({ ipconfig /flushdns; [System.Windows.MessageBox]::Show("DNS Flushed.", "MIDAS") })
+    $window.FindName("btnDNS").Add_Click({ ipconfig /flushdns; [System.Windows.MessageBox]::Show("DNS Cache Flushed", "MIDAS") })
     $window.FindName("btnAct").Add_Click({ Start-Process powershell "-Command irm https://get.activated.win | iex" -Verb RunAs })
 
     $window.FindName("btnInstall").Add_Click({
         $apps = @{ "chkChrome"="Google.Chrome"; "chkFirefox"="Mozilla.Firefox"; "chkVSCode"="Microsoft.VisualStudioCode"; "chk7Zip"="7zip.7zip"; "chkDiscord"="Discord.Discord"; "chkSteam"="Valve.Steam"; "chkSpotify"="Spotify.Spotify" }
         foreach($id in $apps.Keys) {
-            if ($window.FindName($id).IsChecked) {
+            $ctrl = $window.FindName($id)
+            if ($ctrl -and $ctrl.IsChecked) {
                 winget install --id $apps[$id] --silent --accept-package-agreements
             }
         }
-        [System.Windows.MessageBox]::Show("Task Complete.", "MIDAS")
+        [System.Windows.MessageBox]::Show("Installation tasks complete.", "MIDAS")
     })
 
     $window.FindName("btnApply").Add_Click({
@@ -200,15 +202,15 @@ try {
             Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0
         }
         if ($window.FindName("twkClassic").IsChecked) {
-            $path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
-            if (!(Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
-            Set-ItemProperty -Path $path -Name "(Default)" -Value "" -Force
+            $p = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
+            if (!(Test-Path $p)) { New-Item -Path $p -Force | Out-Null }
+            Set-ItemProperty -Path $p -Name "(Default)" -Value "" -Force
         }
-        [System.Windows.MessageBox]::Show("Tweaks Applied. Restart explorer.exe to see changes.", "MIDAS")
+        [System.Windows.MessageBox]::Show("Tweaks Applied. Restart required for some changes.", "MIDAS")
     })
 
     $window.ShowDialog() | Out-Null
 
 } catch {
-    [System.Windows.MessageBox]::Show("Error: $_", "MIDAS")
+    [System.Windows.MessageBox]::Show("Critical Error: $_", "MIDAS")
 }
