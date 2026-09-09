@@ -1,6 +1,6 @@
 #Requires -RunAsAdministrator
 # ============================================================
-# MIDAS WINDOWS UTILITY
+# MIDAS SYSTEM UTILITY
 # Sleek Metallic Edition
 # ============================================================
 
@@ -8,15 +8,15 @@
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) {
     [System.Windows.Forms.MessageBox]::Show(
-        "MIDAS requires Administrator privileges.`n`nPlease launch PowerShell as Administrator and run the command again.",
-        "MIDAS Access Required",
+        "Administrator privileges required. Please launch PowerShell as Administrator and run the utility again.",
+        "MIDAS",
         [System.Windows.Forms.MessageBoxButtons]::OK,
         [System.Windows.Forms.MessageBoxIcon]::Warning
     ) | Out-Null
     exit
 }
 
-# ── Load WPF Assemblies ──
+# ── Load Assemblies ──
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
 Add-Type -AssemblyName WindowsBase
@@ -24,29 +24,29 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 # ============================================================
-# XAML GUI DEFINITION (Sleek Liquid Gold Theme)
+# XAML GUI DEFINITION
 # ============================================================
 [xml]$XAML = @"
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MIDAS System Utility"
-    Height="730" Width="1080"
+    Title="MIDAS"
+    Height="720" Width="1080"
     WindowStartupLocation="CenterScreen"
-    Background="#0a0907" Foreground="#e6d7c3"
+    Background="#050403" Foreground="#e3dac9"
     ResizeMode="CanResizeWithGrip"
     FontFamily="Segoe UI">
 
     <Window.Resources>
-        <!-- Sleek Button Style -->
+        <!-- Premium Sleek Button -->
         <Style x:Key="SleekButton" TargetType="Button">
-            <Setter Property="Background" Value="#17130d"/>
-            <Setter Property="Foreground" Value="#d4af37"/>
-            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Background" Value="#120e0a"/>
+            <Setter Property="Foreground" Value="#c5a059"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="14,7"/>
             <Setter Property="Margin" Value="4"/>
-            <Setter Property="BorderBrush" Value="#4a3b18"/>
+            <Setter Property="BorderBrush" Value="#3d3118"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -55,18 +55,18 @@ Add-Type -AssemblyName System.Drawing
                         <Border x:Name="border" Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2d2211"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#d4af37"/>
-                                <Setter Property="Foreground" Value="#f5e6a3"/>
+                                <Setter TargetName="border" Property="Background" Value="#241b10"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#c5a059"/>
+                                <Setter Property="Foreground" Value="#f2e6ce"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#d4af37"/>
-                                <Setter Property="Foreground" Value="#0a0907"/>
+                                <Setter TargetName="border" Property="Background" Value="#c5a059"/>
+                                <Setter Property="Foreground" Value="#050403"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -76,40 +76,40 @@ Add-Type -AssemblyName System.Drawing
 
         <!-- Accent Action Button -->
         <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource SleekButton}">
-            <Setter Property="Background" Value="#382b13"/>
-            <Setter Property="Foreground" Value="#f5e6a3"/>
-            <Setter Property="BorderBrush" Value="#8a6d29"/>
+            <Setter Property="Background" Value="#2b200d"/>
+            <Setter Property="Foreground" Value="#f2e6ce"/>
+            <Setter Property="BorderBrush" Value="#6e5426"/>
         </Style>
 
-        <!-- Sleek CheckBox Style -->
+        <!-- Minimal CheckBox -->
         <Style TargetType="CheckBox">
-            <Setter Property="Foreground" Value="#cccccc"/>
+            <Setter Property="Foreground" Value="#b3a998"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="5,5"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Minimalist Tab Header -->
+        <!-- Minimal Tab Header -->
         <Style TargetType="TabItem">
-            <Setter Property="Background" Value="#120e09"/>
-            <Setter Property="Foreground" Value="#8a733e"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="#0c0906"/>
+            <Setter Property="Foreground" Value="#705b30"/>
+            <Setter Property="FontSize" Value="12.5"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="22,9"/>
+            <Setter Property="Padding" Value="20,8"/>
             <Setter Property="Margin" Value="2,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
                         <Border x:Name="tabBorder" Background="{TemplateBinding Background}"
-                                BorderBrush="#332812" BorderThickness="1,1,1,0"
-                                CornerRadius="4,4,0,0" Padding="{TemplateBinding Padding}">
+                                BorderBrush="#241b0d" BorderThickness="1,1,1,0"
+                                CornerRadius="3,3,0,0" Padding="{TemplateBinding Padding}">
                             <ContentPresenter ContentSource="Header" HorizontalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="tabBorder" Property="Background" Value="#1f180d"/>
-                                <Setter TargetName="tabBorder" Property="BorderBrush" Value="#d4af37"/>
-                                <Setter Property="Foreground" Value="#d4af37"/>
+                                <Setter TargetName="tabBorder" Property="Background" Value="#17120a"/>
+                                <Setter TargetName="tabBorder" Property="BorderBrush" Value="#c5a059"/>
+                                <Setter Property="Foreground" Value="#c5a059"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -118,17 +118,17 @@ Add-Type -AssemblyName System.Drawing
         </Style>
     </Window.Resources>
 
-    <!-- REAL-TIME LIQUID GOLD BACKGROUND -->
+    <!-- REAL-TIME REALISTIC LIQUID GOLD BACKGROUND -->
     <Grid x:Name="MainGrid">
         <Grid.Background>
             <LinearGradientBrush x:Name="LiquidGoldBrush" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#070604" Offset="0.0"/>
-                <GradientStop Color="#1a140b" Offset="0.18"/>
-                <GradientStop Color="#3b2d13" Offset="0.38"/>
-                <GradientStop Color="#8c6d2d" Offset="0.50"/>
-                <GradientStop Color="#3b2d13" Offset="0.62"/>
-                <GradientStop Color="#1a140b" Offset="0.82"/>
-                <GradientStop Color="#070604" Offset="1.0"/>
+                <GradientStop x:Name="GStop0" Color="#050403" Offset="0.0"/>
+                <GradientStop x:Name="GStop1" Color="#140f08" Offset="0.2"/>
+                <GradientStop x:Name="GStop2" Color="#302410" Offset="0.4"/>
+                <GradientStop x:Name="GStop3" Color="#6e5424" Offset="0.5"/>
+                <GradientStop x:Name="GStop4" Color="#302410" Offset="0.6"/>
+                <GradientStop x:Name="GStop5" Color="#140f08" Offset="0.8"/>
+                <GradientStop x:Name="GStop6" Color="#050403" Offset="1.0"/>
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -139,13 +139,10 @@ Add-Type -AssemblyName System.Drawing
         </Grid.RowDefinitions>
 
         <!-- TOP BAR -->
-        <Border Grid.Row="0" Background="#0d0b08" BorderBrush="#2e2410" BorderThickness="0,0,0,1" Padding="20,12">
+        <Border Grid.Row="0" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,0,0,1" Padding="20,12">
             <Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="MIDAS" FontSize="20" FontWeight="Bold" Foreground="#d4af37" CharacterSpacing="120"/>
-                    <TextBlock Text="System Utility" FontSize="12" Foreground="#735e29" VerticalAlignment="Center" Margin="12,2,0,0"/>
-                </StackPanel>
-                <TextBlock Text="v3.0" FontSize="11" Foreground="#4a3b18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Text="MIDAS" FontSize="18" FontWeight="Bold" Foreground="#c5a059" CharacterSpacing="150"/>
+                <TextBlock Text="v3.0" FontSize="11" Foreground="#3d3118" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
@@ -154,7 +151,7 @@ Add-Type -AssemblyName System.Drawing
 
             <!-- TAB 1: APPLICATIONS -->
             <TabItem Header="Applications">
-                <Border Background="#0d0b08" CornerRadius="0,4,4,4" BorderBrush="#2e2410" BorderThickness="1" Padding="16">
+                <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -172,14 +169,14 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Browsers -->
                                 <StackPanel Grid.Column="0" Margin="4">
-                                    <TextBlock Text="Browsers" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Browsers" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="chkChrome" Content="Google Chrome"/>
                                     <CheckBox x:Name="chkFirefox" Content="Mozilla Firefox"/>
                                     <CheckBox x:Name="chkBrave" Content="Brave Browser"/>
                                     <CheckBox x:Name="chkEdge" Content="Microsoft Edge"/>
                                     <CheckBox x:Name="chkOperaGX" Content="Opera GX"/>
 
-                                    <TextBlock Text="Communication" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,16,5,8"/>
+                                    <TextBlock Text="Communication" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,16,5,8"/>
                                     <CheckBox x:Name="chkDiscord" Content="Discord"/>
                                     <CheckBox x:Name="chkTelegram" Content="Telegram"/>
                                     <CheckBox x:Name="chkWhatsApp" Content="WhatsApp"/>
@@ -188,7 +185,7 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Development -->
                                 <StackPanel Grid.Column="1" Margin="4">
-                                    <TextBlock Text="Developer Tools" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Developer Tools" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="chkVSCode" Content="VS Code"/>
                                     <CheckBox x:Name="chkGit" Content="Git"/>
                                     <CheckBox x:Name="chkNodeJS" Content="Node.js LTS"/>
@@ -201,7 +198,7 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Media -->
                                 <StackPanel Grid.Column="2" Margin="4">
-                                    <TextBlock Text="Media &amp; Design" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Media &amp; Design" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="chkVLC" Content="VLC Media Player"/>
                                     <CheckBox x:Name="chkSpotify" Content="Spotify"/>
                                     <CheckBox x:Name="chkOBS" Content="OBS Studio"/>
@@ -212,7 +209,7 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Utilities -->
                                 <StackPanel Grid.Column="3" Margin="4">
-                                    <TextBlock Text="Utilities &amp; Tools" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Utilities &amp; Tools" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="chk7Zip" Content="7-Zip"/>
                                     <CheckBox x:Name="chkWinRAR" Content="WinRAR"/>
                                     <CheckBox x:Name="chkPowerToys" Content="Microsoft PowerToys"/>
@@ -224,10 +221,10 @@ Add-Type -AssemblyName System.Drawing
                         </ScrollViewer>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0">
-                            <Button x:Name="btnInstallApps" Content="Install Selected" Style="{StaticResource AccentButton}" Width="180"/>
-                            <Button x:Name="btnSelectAllApps" Content="Select All" Style="{StaticResource SleekButton}" Width="120"/>
-                            <Button x:Name="btnDeselectApps" Content="Clear Selection" Style="{StaticResource SleekButton}" Width="120"/>
-                            <Button x:Name="btnUpdateApps" Content="Update All Packages" Style="{StaticResource SleekButton}" Width="160"/>
+                            <Button x:Name="btnInstallApps" Content="Install Selected" Style="{StaticResource AccentButton}" Width="160"/>
+                            <Button x:Name="btnSelectAllApps" Content="Select All" Style="{StaticResource SleekButton}" Width="110"/>
+                            <Button x:Name="btnDeselectApps" Content="Clear Selection" Style="{StaticResource SleekButton}" Width="110"/>
+                            <Button x:Name="btnUpdateApps" Content="Update All Packages" Style="{StaticResource SleekButton}" Width="150"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -235,7 +232,7 @@ Add-Type -AssemblyName System.Drawing
 
             <!-- TAB 2: SYSTEM TWEAKS -->
             <TabItem Header="Tweaks">
-                <Border Background="#0d0b08" CornerRadius="0,4,4,4" BorderBrush="#2e2410" BorderThickness="1" Padding="16">
+                <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -252,7 +249,7 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Performance -->
                                 <StackPanel Grid.Column="0" Margin="4">
-                                    <TextBlock Text="Performance" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Performance" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="twkHighPerf" Content="High Performance Power Plan"/>
                                     <CheckBox x:Name="twkDisableTelemetry" Content="Disable Telemetry"/>
                                     <CheckBox x:Name="twkDisableGameBar" Content="Disable Game Bar / DVR"/>
@@ -263,7 +260,7 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Privacy -->
                                 <StackPanel Grid.Column="1" Margin="4">
-                                    <TextBlock Text="Privacy" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Privacy" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="twkDisableAds" Content="Disable Advertising ID"/>
                                     <CheckBox x:Name="twkDisableCortana" Content="Disable Cortana Search"/>
                                     <CheckBox x:Name="twkDisableLocation" Content="Disable Location Tracking"/>
@@ -273,7 +270,7 @@ Add-Type -AssemblyName System.Drawing
 
                                 <!-- Explorer -->
                                 <StackPanel Grid.Column="2" Margin="4">
-                                    <TextBlock Text="Explorer &amp; Interface" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Explorer &amp; Interface" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="twkShowFileExt" Content="Show File Extensions"/>
                                     <CheckBox x:Name="twkShowHidden" Content="Show Hidden Files"/>
                                     <CheckBox x:Name="twkDarkMode" Content="Enable System Dark Mode"/>
@@ -285,9 +282,9 @@ Add-Type -AssemblyName System.Drawing
                         </ScrollViewer>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0">
-                            <Button x:Name="btnApplyTweaks" Content="Apply Tweaks" Style="{StaticResource AccentButton}" Width="200"/>
-                            <Button x:Name="btnSelectRecommendedTweaks" Content="Select Recommended" Style="{StaticResource SleekButton}" Width="180"/>
-                            <Button x:Name="btnDeselectTweaks" Content="Clear Selection" Style="{StaticResource SleekButton}" Width="120"/>
+                            <Button x:Name="btnApplyTweaks" Content="Apply Tweaks" Style="{StaticResource AccentButton}" Width="180"/>
+                            <Button x:Name="btnSelectRecommendedTweaks" Content="Select Recommended" Style="{StaticResource SleekButton}" Width="160"/>
+                            <Button x:Name="btnDeselectTweaks" Content="Clear Selection" Style="{StaticResource SleekButton}" Width="110"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -295,7 +292,7 @@ Add-Type -AssemblyName System.Drawing
 
             <!-- TAB 3: DEBLOAT -->
             <TabItem Header="Debloat">
-                <Border Background="#0d0b08" CornerRadius="0,4,4,4" BorderBrush="#2e2410" BorderThickness="1" Padding="16">
+                <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -310,7 +307,7 @@ Add-Type -AssemblyName System.Drawing
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Margin="4">
-                                    <TextBlock Text="System Provisioned Apps" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="System Provisioned Apps" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="db3DViewer" Content="3D Viewer &amp; Print 3D"/>
                                     <CheckBox x:Name="dbBingNews" Content="Bing News &amp; Weather"/>
                                     <CheckBox x:Name="dbFeedbackHub" Content="Feedback Hub"/>
@@ -322,7 +319,7 @@ Add-Type -AssemblyName System.Drawing
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Margin="4">
-                                    <TextBlock Text="Additional Applications" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="5,4,5,8"/>
+                                    <TextBlock Text="Additional Applications" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
                                     <CheckBox x:Name="dbSkype" Content="Skype"/>
                                     <CheckBox x:Name="dbYourPhone" Content="Phone Link"/>
                                     <CheckBox x:Name="dbXboxApps" Content="Xbox Services &amp; Apps"/>
@@ -333,8 +330,8 @@ Add-Type -AssemblyName System.Drawing
                         </ScrollViewer>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0">
-                            <Button x:Name="btnRemoveDebloat" Content="Remove Selected Applications" Style="{StaticResource AccentButton}" Width="240"/>
-                            <Button x:Name="btnSafeDebloat" Content="Select Safe Package Preset" Style="{StaticResource SleekButton}" Width="200"/>
+                            <Button x:Name="btnRemoveDebloat" Content="Remove Selected Applications" Style="{StaticResource AccentButton}" Width="210"/>
+                            <Button x:Name="btnSafeDebloat" Content="Select Safe Preset" Style="{StaticResource SleekButton}" Width="160"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -342,7 +339,7 @@ Add-Type -AssemblyName System.Drawing
 
             <!-- TAB 4: MAINTENANCE & TOOLS -->
             <TabItem Header="Tools &amp; Repairs">
-                <Border Background="#0d0b08" CornerRadius="0,4,4,4" BorderBrush="#2e2410" BorderThickness="1" Padding="16">
+                <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -351,12 +348,12 @@ Add-Type -AssemblyName System.Drawing
 
                         <!-- Hardware Info & Maintenance -->
                         <StackPanel Grid.Column="0" Margin="8">
-                            <TextBlock Text="Hardware &amp; System Information" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="0,0,0,8"/>
-                            <Border Background="#120e09" BorderBrush="#2e2410" BorderThickness="1" CornerRadius="4" Padding="12">
-                                <TextBlock x:Name="txtSysInfo" Text="Gathering specifications..." FontFamily="Consolas" FontSize="12" Foreground="#d6c7b2" TextWrapping="Wrap"/>
+                            <TextBlock Text="Hardware &amp; System Information" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="0,0,0,8"/>
+                            <Border Background="#120e0a" BorderBrush="#241b0d" BorderThickness="1" CornerRadius="3" Padding="12">
+                                <TextBlock x:Name="txtSysInfo" Text="Gathering specifications..." FontFamily="Consolas" FontSize="11.5" Foreground="#d6c7b2" TextWrapping="Wrap"/>
                             </Border>
 
-                            <TextBlock Text="System Integrity Commands" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="0,18,0,8"/>
+                            <TextBlock Text="System Repairs" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="0,18,0,8"/>
                             <WrapPanel>
                                 <Button x:Name="btnSFC" Content="SFC Scan" Style="{StaticResource SleekButton}"/>
                                 <Button x:Name="btnDISM" Content="DISM Repair" Style="{StaticResource SleekButton}"/>
@@ -368,7 +365,7 @@ Add-Type -AssemblyName System.Drawing
 
                         <!-- Windows Shortcuts -->
                         <StackPanel Grid.Column="1" Margin="8">
-                            <TextBlock Text="System Management" FontSize="13" FontWeight="Bold" Foreground="#d4af37" Margin="0,0,0,8"/>
+                            <TextBlock Text="System Management" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="0,0,0,8"/>
                             <WrapPanel>
                                 <Button x:Name="btnActivate" Content="Activate Windows (MAS)" Style="{StaticResource AccentButton}"/>
                                 <Button x:Name="btnDiskCleanup" Content="Disk Cleanup" Style="{StaticResource SleekButton}"/>
@@ -383,10 +380,10 @@ Add-Type -AssemblyName System.Drawing
         </TabControl>
 
         <!-- FOOTER STATUS BAR -->
-        <Border Grid.Row="2" Background="#0d0b08" BorderBrush="#2e2410" BorderThickness="0,1,0,0" Padding="16,8">
+        <Border Grid.Row="2" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,1,0,0" Padding="16,8">
             <Grid>
-                <TextBlock x:Name="txtStatus" Text="Ready" FontSize="12" Foreground="#8a733e" VerticalAlignment="Center"/>
-                <ProgressBar x:Name="progressBar" Width="200" Height="12" HorizontalAlignment="Right" Background="#120e09" Foreground="#d4af37" Value="0" Visibility="Hidden"/>
+                <TextBlock x:Name="txtStatus" Text="Ready" FontSize="11.5" Foreground="#705b30" VerticalAlignment="Center"/>
+                <ProgressBar x:Name="progressBar" Width="180" Height="10" HorizontalAlignment="Right" Background="#120e0a" Foreground="#c5a059" Value="0" Visibility="Hidden"/>
             </Grid>
         </Border>
     </Grid>
@@ -394,7 +391,7 @@ Add-Type -AssemblyName System.Drawing
 "@
 
 # ============================================================
-# LOAD GUI & LIQUID GOLD ANIMATION ENGINE
+# LOAD GUI & REALISTIC LIQUID GOLD ANIMATION ENGINE
 # ============================================================
 $reader = (New-Object System.Xml.XmlNodeReader $XAML)
 $window = [Windows.Markup.XamlReader]::Load($reader)
@@ -404,22 +401,22 @@ $XAML.SelectNodes("//*[@*[contains(translate(name(),'x','X'),'Name')]]") | ForEa
     Set-Variable -Name ($_.Name) -Value $window.FindName($_.Name) -Scope Script
 }
 
-# ── Smooth Fluid Liquid Gold Background Animation ──
+# ── Real-Time Fluid Liquid Gold Animation ──
 $liquidBrush = $window.FindName("LiquidGoldBrush")
 if ($liquidBrush) {
-    # Animate Brush StartPoint
+    # Animate gradient StartPoint (wave movement)
     $animStart = New-Object System.Windows.Media.Animation.PointAnimation
     $animStart.From = New-Object System.Windows.Point(0, 0)
-    $animStart.To = New-Object System.Windows.Point(1, 0.6)
-    $animStart.Duration = New-Object System.Windows.Duration([TimeSpan]::FromSeconds(9))
+    $animStart.To = New-Object System.Windows.Point(0.8, 0.5)
+    $animStart.Duration = New-Object System.Windows.Duration([TimeSpan]::FromSeconds(8))
     $animStart.AutoReverse = $true
     $animStart.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
 
-    # Animate Brush EndPoint
+    # Animate gradient EndPoint
     $animEnd = New-Object System.Windows.Media.Animation.PointAnimation
     $animEnd.From = New-Object System.Windows.Point(1, 1)
-    $animEnd.To = New-Object System.Windows.Point(0, 0.4)
-    $animEnd.Duration = New-Object System.Windows.Duration([TimeSpan]::FromSeconds(9))
+    $animEnd.To = New-Object System.Windows.Point(0.2, 0.5)
+    $animEnd.Duration = New-Object System.Windows.Duration([TimeSpan]::FromSeconds(8))
     $animEnd.AutoReverse = $true
     $animEnd.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
 
