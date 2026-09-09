@@ -122,13 +122,13 @@ Add-Type -AssemblyName System.Drawing
     <Grid x:Name="MainGrid">
         <Grid.Background>
             <LinearGradientBrush x:Name="LiquidGoldBrush" StartPoint="0,0" EndPoint="1,1">
-                <GradientStop x:Name="GStop0" Color="#050403" Offset="0.0"/>
-                <GradientStop x:Name="GStop1" Color="#140f08" Offset="0.2"/>
-                <GradientStop x:Name="GStop2" Color="#302410" Offset="0.4"/>
-                <GradientStop x:Name="GStop3" Color="#6e5424" Offset="0.5"/>
-                <GradientStop x:Name="GStop4" Color="#302410" Offset="0.6"/>
-                <GradientStop x:Name="GStop5" Color="#140f08" Offset="0.8"/>
-                <GradientStop x:Name="GStop6" Color="#050403" Offset="1.0"/>
+                <GradientStop Color="#050403" Offset="0.0"/>
+                <GradientStop Color="#140f08" Offset="0.2"/>
+                <GradientStop Color="#302410" Offset="0.4"/>
+                <GradientStop Color="#6e5424" Offset="0.5"/>
+                <GradientStop Color="#302410" Offset="0.6"/>
+                <GradientStop Color="#140f08" Offset="0.8"/>
+                <GradientStop Color="#050403" Offset="1.0"/>
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -141,7 +141,7 @@ Add-Type -AssemblyName System.Drawing
         <!-- TOP BAR -->
         <Border Grid.Row="0" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,0,0,1" Padding="20,12">
             <Grid>
-                <TextBlock Text="MIDAS" FontSize="18" FontWeight="Bold" Foreground="#c5a059" CharacterSpacing="150"/>
+                <TextBlock Text="M I D A S" FontSize="18" FontWeight="Bold" Foreground="#c5a059"/>
                 <TextBlock Text="v3.0" FontSize="11" Foreground="#3d3118" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </Grid>
         </Border>
