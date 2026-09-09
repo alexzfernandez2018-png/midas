@@ -4,22 +4,16 @@
 # Sleek Metallic Edition
 # ============================================================
 
-# ── Load Required WPF Assemblies First ──
-Add-Type -AssemblyName PresentationFramework -ErrorAction SilentlyContinue
-Add-Type -AssemblyName PresentationCore -ErrorAction SilentlyContinue
-Add-Type -AssemblyName WindowsBase -ErrorAction SilentlyContinue
-Add-Type -AssemblyName System.Drawing -ErrorAction SilentlyContinue
+# ── Load Required Assemblies ──
+Add-Type -AssemblyName PresentationFramework
+Add-Type -AssemblyName PresentationCore
+Add-Type -AssemblyName WindowsBase
 
 try {
     # ── Admin Verification ──
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if (-not $isAdmin) {
-        [System.Windows.MessageBox]::Show(
-            "Administrator privileges required. Please launch PowerShell as Administrator and run the utility again.",
-            "MIDAS",
-            "OK",
-            "Warning"
-        ) | Out-Null
+        [System.Windows.MessageBox]::Show("Administrator privileges required. Please launch PowerShell as Administrator.","MIDAS","OK","Warning") | Out-Null
         exit
     }
 
@@ -38,7 +32,6 @@ try {
     FontFamily="Segoe UI">
 
     <Window.Resources>
-        <!-- Premium Sleek Button -->
         <Style x:Key="SleekButton" TargetType="Button">
             <Setter Property="Background" Value="#120e0a"/>
             <Setter Property="Foreground" Value="#c5a059"/>
@@ -48,7 +41,6 @@ try {
             <Setter Property="Margin" Value="4"/>
             <Setter Property="BorderBrush" Value="#3d3118"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -62,11 +54,6 @@ try {
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#241b10"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#c5a059"/>
-                                <Setter Property="Foreground" Value="#f2e6ce"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#c5a059"/>
-                                <Setter Property="Foreground" Value="#050403"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -74,29 +61,22 @@ try {
             </Setter>
         </Style>
 
-        <!-- Accent Action Button -->
         <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource SleekButton}">
             <Setter Property="Background" Value="#2b200d"/>
             <Setter Property="Foreground" Value="#f2e6ce"/>
-            <Setter Property="BorderBrush" Value="#6e5426"/>
         </Style>
 
-        <!-- Minimal CheckBox -->
         <Style TargetType="CheckBox">
             <Setter Property="Foreground" Value="#b3a998"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="5,5"/>
-            <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Minimal Tab Header -->
         <Style TargetType="TabItem">
             <Setter Property="Background" Value="#0c0906"/>
             <Setter Property="Foreground" Value="#705b30"/>
             <Setter Property="FontSize" Value="12.5"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="20,8"/>
-            <Setter Property="Margin" Value="2,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -118,7 +98,6 @@ try {
         </Style>
     </Window.Resources>
 
-    <!-- REAL-TIME REALISTIC LIQUID GOLD BACKGROUND -->
     <Grid x:Name="MainGrid">
         <Grid.Background>
             <LinearGradientBrush x:Name="LiquidGoldBrush" StartPoint="0,0" EndPoint="1,1">
@@ -138,7 +117,6 @@ try {
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- TOP BAR -->
         <Border Grid.Row="0" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,0,0,1" Padding="20,12">
             <Grid>
                 <TextBlock Text="MIDAS" FontSize="18" FontWeight="Bold" Foreground="#c5a059"/>
@@ -146,457 +124,102 @@ try {
             </Grid>
         </Border>
 
-        <!-- TAB NAVIGATION -->
         <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="12">
-
-            <!-- TAB 1: APPLICATIONS -->
             <TabItem Header="Applications">
                 <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
+                        <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Browsers -->
-                                <StackPanel Grid.Column="0" Margin="4">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
                                     <TextBlock Text="Browsers" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="chkChrome" Content="Google Chrome"/>
-                                    <CheckBox x:Name="chkFirefox" Content="Mozilla Firefox"/>
-                                    <CheckBox x:Name="chkBrave" Content="Brave Browser"/>
-                                    <CheckBox x:Name="chkEdge" Content="Microsoft Edge"/>
-                                    <CheckBox x:Name="chkOperaGX" Content="Opera GX"/>
-
-                                    <TextBlock Text="Communication" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,16,5,8"/>
-                                    <CheckBox x:Name="chkDiscord" Content="Discord"/>
-                                    <CheckBox x:Name="chkTelegram" Content="Telegram"/>
-                                    <CheckBox x:Name="chkWhatsApp" Content="WhatsApp"/>
-                                    <CheckBox x:Name="chkZoom" Content="Zoom"/>
+                                    <CheckBox x:Name="chkChrome" Content="Google Chrome"/><CheckBox x:Name="chkFirefox" Content="Mozilla Firefox"/>
+                                    <CheckBox x:Name="chkBrave" Content="Brave Browser"/><CheckBox x:Name="chkEdge" Content="Microsoft Edge"/>
                                 </StackPanel>
-
-                                <!-- Development -->
-                                <StackPanel Grid.Column="1" Margin="4">
-                                    <TextBlock Text="Developer Tools" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="chkVSCode" Content="VS Code"/>
-                                    <CheckBox x:Name="chkGit" Content="Git"/>
-                                    <CheckBox x:Name="chkNodeJS" Content="Node.js LTS"/>
-                                    <CheckBox x:Name="chkPython" Content="Python 3.12"/>
-                                    <CheckBox x:Name="chkTerminal" Content="Windows Terminal"/>
-                                    <CheckBox x:Name="chkPowerShell7" Content="PowerShell 7"/>
-                                    <CheckBox x:Name="chkDocker" Content="Docker Desktop"/>
-                                    <CheckBox x:Name="chkNotepadPP" Content="Notepad++"/>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="Developer" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
+                                    <CheckBox x:Name="chkVSCode" Content="VS Code"/><CheckBox x:Name="chkGit" Content="Git"/>
+                                    <CheckBox x:Name="chkTerminal" Content="Terminal"/><CheckBox x:Name="chkPython" Content="Python"/>
                                 </StackPanel>
-
-                                <!-- Media -->
-                                <StackPanel Grid.Column="2" Margin="4">
-                                    <TextBlock Text="Media &amp; Design" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="chkVLC" Content="VLC Media Player"/>
-                                    <CheckBox x:Name="chkSpotify" Content="Spotify"/>
-                                    <CheckBox x:Name="chkOBS" Content="OBS Studio"/>
-                                    <CheckBox x:Name="chkGIMP" Content="GIMP Image Editor"/>
-                                    <CheckBox x:Name="chkShareX" Content="ShareX Screenshot"/>
-                                    <CheckBox x:Name="chkHandbrake" Content="Handbrake Converter"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Media" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
+                                    <CheckBox x:Name="chkVLC" Content="VLC"/><CheckBox x:Name="chkSpotify" Content="Spotify"/>
+                                    <CheckBox x:Name="chkOBS" Content="OBS Studio"/><CheckBox x:Name="chkGIMP" Content="GIMP"/>
                                 </StackPanel>
-
-                                <!-- Utilities -->
-                                <StackPanel Grid.Column="3" Margin="4">
-                                    <TextBlock Text="Utilities &amp; Tools" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="chk7Zip" Content="7-Zip"/>
-                                    <CheckBox x:Name="chkWinRAR" Content="WinRAR"/>
-                                    <CheckBox x:Name="chkPowerToys" Content="Microsoft PowerToys"/>
-                                    <CheckBox x:Name="chkEverything" Content="Everything Search"/>
-                                    <CheckBox x:Name="chkBitwarden" Content="Bitwarden"/>
-                                    <CheckBox x:Name="chkSteam" Content="Steam Client"/>
+                                <StackPanel Grid.Column="3">
+                                    <TextBlock Text="Utilities" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
+                                    <CheckBox x:Name="chk7Zip" Content="7-Zip"/><CheckBox x:Name="chkWinRAR" Content="WinRAR"/>
+                                    <CheckBox x:Name="chkSteam" Content="Steam"/><CheckBox x:Name="chkBitwarden" Content="Bitwarden"/>
                                 </StackPanel>
                             </Grid>
                         </ScrollViewer>
-
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0">
                             <Button x:Name="btnInstallApps" Content="Install Selected" Style="{StaticResource AccentButton}" Width="160"/>
                             <Button x:Name="btnSelectAllApps" Content="Select All" Style="{StaticResource SleekButton}" Width="110"/>
-                            <Button x:Name="btnDeselectApps" Content="Clear Selection" Style="{StaticResource SleekButton}" Width="110"/>
-                            <Button x:Name="btnUpdateApps" Content="Update All Packages" Style="{StaticResource SleekButton}" Width="150"/>
+                            <Button x:Name="btnDeselectApps" Content="Clear" Style="{StaticResource SleekButton}" Width="110"/>
                         </StackPanel>
                     </Grid>
                 </Border>
             </TabItem>
 
-            <!-- TAB 2: SYSTEM TWEAKS -->
             <TabItem Header="Tweaks">
                 <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Performance -->
-                                <StackPanel Grid.Column="0" Margin="4">
-                                    <TextBlock Text="Performance" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="twkHighPerf" Content="High Performance Power Plan"/>
-                                    <CheckBox x:Name="twkDisableTelemetry" Content="Disable Telemetry"/>
-                                    <CheckBox x:Name="twkDisableGameBar" Content="Disable Game Bar / DVR"/>
-                                    <CheckBox x:Name="twkDisableHibernation" Content="Disable Hibernation"/>
-                                    <CheckBox x:Name="twkDisableSysMain" Content="Disable SysMain Service"/>
-                                    <CheckBox x:Name="twkDisableStartupDelay" Content="Disable Startup Delay"/>
-                                </StackPanel>
-
-                                <!-- Privacy -->
-                                <StackPanel Grid.Column="1" Margin="4">
-                                    <TextBlock Text="Privacy" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="twkDisableAds" Content="Disable Advertising ID"/>
-                                    <CheckBox x:Name="twkDisableCortana" Content="Disable Cortana Search"/>
-                                    <CheckBox x:Name="twkDisableLocation" Content="Disable Location Tracking"/>
-                                    <CheckBox x:Name="twkDisableFeedback" Content="Disable Feedback Requests"/>
-                                    <CheckBox x:Name="twkDisableActivityHistory" Content="Disable Activity History"/>
-                                </StackPanel>
-
-                                <!-- Explorer -->
-                                <StackPanel Grid.Column="2" Margin="4">
-                                    <TextBlock Text="Explorer &amp; Interface" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="twkShowFileExt" Content="Show File Extensions"/>
-                                    <CheckBox x:Name="twkShowHidden" Content="Show Hidden Files"/>
-                                    <CheckBox x:Name="twkDarkMode" Content="Enable System Dark Mode"/>
-                                    <CheckBox x:Name="twkClassicRightClick" Content="Classic Context Menu (Win 11)"/>
-                                    <CheckBox x:Name="twkTaskbarLeft" Content="Align Taskbar Left (Win 11)"/>
-                                    <CheckBox x:Name="twkDisableWidgets" Content="Disable Widgets (Win 11)"/>
-                                </StackPanel>
-                            </Grid>
-                        </ScrollViewer>
-
+                        <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <StackPanel>
+                            <CheckBox x:Name="twkHighPerf" Content="High Performance Power Plan"/>
+                            <CheckBox x:Name="twkDisableTelemetry" Content="Disable Telemetry"/>
+                            <CheckBox x:Name="twkDarkMode" Content="Enable Dark Mode"/>
+                            <CheckBox x:Name="twkShowFileExt" Content="Show File Extensions"/>
+                            <CheckBox x:Name="twkClassicRightClick" Content="Classic Context Menu (Win 11)"/>
+                        </StackPanel>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0">
                             <Button x:Name="btnApplyTweaks" Content="Apply Tweaks" Style="{StaticResource AccentButton}" Width="180"/>
-                            <Button x:Name="btnSelectRecommendedTweaks" Content="Select Recommended" Style="{StaticResource SleekButton}" Width="160"/>
-                            <Button x:Name="btnDeselectTweaks" Content="Clear Selection" Style="{StaticResource SleekButton}" Width="110"/>
                         </StackPanel>
                     </Grid>
                 </Border>
             </TabItem>
 
-            <!-- TAB 3: DEBLOAT -->
-            <TabItem Header="Debloat">
+            <TabItem Header="Tools">
                 <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="0" Margin="4">
-                                    <TextBlock Text="System Provisioned Apps" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="db3DViewer" Content="3D Viewer &amp; Print 3D"/>
-                                    <CheckBox x:Name="dbBingNews" Content="Bing News &amp; Weather"/>
-                                    <CheckBox x:Name="dbFeedbackHub" Content="Feedback Hub"/>
-                                    <CheckBox x:Name="dbGetHelp" Content="Get Help &amp; Tips"/>
-                                    <CheckBox x:Name="dbMaps" Content="Windows Maps"/>
-                                    <CheckBox x:Name="dbSolitaire" Content="Solitaire Collection"/>
-                                    <CheckBox x:Name="dbMixedReality" Content="Mixed Reality Portal"/>
-                                    <CheckBox x:Name="dbOfficeHub" Content="Office Hub"/>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="1" Margin="4">
-                                    <TextBlock Text="Additional Applications" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="5,4,5,8"/>
-                                    <CheckBox x:Name="dbSkype" Content="Skype"/>
-                                    <CheckBox x:Name="dbYourPhone" Content="Phone Link"/>
-                                    <CheckBox x:Name="dbXboxApps" Content="Xbox Services &amp; Apps"/>
-                                    <CheckBox x:Name="dbZune" Content="Groove Music &amp; Movies/TV"/>
-                                    <CheckBox x:Name="dbOneDrive" Content="Remove OneDrive"/>
-                                </StackPanel>
-                            </Grid>
-                        </ScrollViewer>
-
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0">
-                            <Button x:Name="btnRemoveDebloat" Content="Remove Selected Applications" Style="{StaticResource AccentButton}" Width="210"/>
-                            <Button x:Name="btnSafeDebloat" Content="Select Safe Preset" Style="{StaticResource SleekButton}" Width="160"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </TabItem>
-
-            <!-- TAB 4: MAINTENANCE & TOOLS -->
-            <TabItem Header="Tools &amp; Repairs">
-                <Border Background="#0a0805" CornerRadius="0,3,3,3" BorderBrush="#241b0d" BorderThickness="1" Padding="16">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Hardware Info & Maintenance -->
-                        <StackPanel Grid.Column="0" Margin="8">
-                            <TextBlock Text="Hardware &amp; System Information" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="0,0,0,8"/>
-                            <Border Background="#120e0a" BorderBrush="#241b0d" BorderThickness="1" CornerRadius="3" Padding="12">
-                                <TextBlock x:Name="txtSysInfo" Text="Gathering specifications..." FontFamily="Consolas" FontSize="11.5" Foreground="#d6c7b2" TextWrapping="Wrap"/>
-                            </Border>
-
-                            <TextBlock Text="System Repairs" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="0,18,0,8"/>
-                            <WrapPanel>
-                                <Button x:Name="btnSFC" Content="SFC Scan" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnDISM" Content="DISM Repair" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnFlushDNS" Content="Flush DNS" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnClearTemp" Content="Clear Temp Files" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnRestorePoint" Content="Create Restore Point" Style="{StaticResource SleekButton}"/>
-                            </WrapPanel>
-                        </StackPanel>
-
-                        <!-- Windows Shortcuts -->
-                        <StackPanel Grid.Column="1" Margin="8">
-                            <TextBlock Text="System Management" FontSize="12.5" FontWeight="Bold" Foreground="#c5a059" Margin="0,0,0,8"/>
-                            <WrapPanel>
-                                <Button x:Name="btnActivate" Content="Activate Windows (MAS)" Style="{StaticResource AccentButton}"/>
-                                <Button x:Name="btnDiskCleanup" Content="Disk Cleanup" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnDevManager" Content="Device Manager" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnServices" Content="Services" Style="{StaticResource SleekButton}"/>
-                                <Button x:Name="btnTaskMgr" Content="Task Manager" Style="{StaticResource SleekButton}"/>
-                            </WrapPanel>
-                        </StackPanel>
-                    </Grid>
+                   <WrapPanel>
+                        <Button x:Name="btnSFC" Content="SFC Scan" Style="{StaticResource SleekButton}"/>
+                        <Button x:Name="btnDISM" Content="DISM Repair" Style="{StaticResource SleekButton}"/>
+                        <Button x:Name="btnFlushDNS" Content="Flush DNS" Style="{StaticResource SleekButton}"/>
+                        <Button x:Name="btnActivate" Content="Activate Windows" Style="{StaticResource AccentButton}"/>
+                   </WrapPanel>
                 </Border>
             </TabItem>
         </TabControl>
 
-        <!-- FOOTER STATUS BAR -->
         <Border Grid.Row="2" Background="#0a0805" BorderBrush="#241b0d" BorderThickness="0,1,0,0" Padding="16,8">
-            <Grid>
-                <TextBlock x:Name="txtStatus" Text="Ready" FontSize="11.5" Foreground="#705b30" VerticalAlignment="Center"/>
-            </Grid>
+            <TextBlock x:Name="txtStatus" Text="Ready" FontSize="11.5" Foreground="#705b30"/>
         </Border>
     </Grid>
 </Window>
 "@
 
-    # ============================================================
-    # LOAD GUI & REAL-TIME ANIMATION ENGINE
-    # ============================================================
     $reader = New-Object System.Xml.XmlNodeReader $XAML
     $window = [Windows.Markup.XamlReader]::Load($reader)
 
-    function Get-UI([string]$name) {
-        return $window.FindName($name)
+    $liquidBrush = $window.FindName("LiquidGoldBrush")
+    if ($liquidBrush) {
+        $animStart = New-Object System.Windows.Media.Animation.PointAnimation
+        $animStart.From = New-Object System.Windows.Point(0, 0)
+        $animStart.To = New-Object System.Windows.Point(0.7, 0.4)
+        $animStart.Duration = [TimeSpan]::FromSeconds(7)
+        $animStart.AutoReverse = $true
+        $animStart.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
+        $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::StartPointProperty, $animStart)
     }
 
-    # Real-Time Fluid Liquid Gold Animation
-    try {
-        $liquidBrush = Get-UI "LiquidGoldBrush"
-        if ($liquidBrush) {
-            $animStart = New-Object System.Windows.Media.Animation.PointAnimation
-            $animStart.From = New-Object System.Windows.Point(0, 0)
-            $animStart.To = New-Object System.Windows.Point(0.8, 0.5)
-            $animStart.Duration = [TimeSpan]::FromSeconds(8)
-            $animStart.AutoReverse = $true
-            $animStart.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
-
-            $animEnd = New-Object System.Windows.Media.Animation.PointAnimation
-            $animEnd.From = New-Object System.Windows.Point(1, 1)
-            $animEnd.To = New-Object System.Windows.Point(0.2, 0.5)
-            $animEnd.Duration = [TimeSpan]::FromSeconds(8)
-            $animEnd.AutoReverse = $true
-            $animEnd.RepeatBehavior = [System.Windows.Media.Animation.RepeatBehavior]::Forever
-
-            $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::StartPointProperty, $animStart)
-            $liquidBrush.BeginAnimation([System.Windows.Media.LinearGradientBrush]::EndPointProperty, $animEnd)
-        }
-    } catch {}
-
-    # ============================================================
-    # BACKEND LOGIC
-    # ============================================================
-
-    function Set-RegDword {
-        param([string]$Path, [string]$Name, [int]$Value)
-        try {
-            if (-not (Test-Path $Path)) { New-Item -Path $Path -Force | Out-Null }
-            Set-ItemProperty -Path $Path -Name $Name -Value $Value -Type DWord -Force
-        } catch {}
-    }
-
-    function Update-Status([string]$msg) {
-        $statusControl = Get-UI "txtStatus"
-        if ($statusControl) {
-            $statusControl.Dispatcher.Invoke([action]{ $statusControl.Text = $msg })
-        }
-    }
-
-    # Hardware Specs Loader
-    $window.Add_Loaded({
-        try {
-            $os = Get-CimInstance Win32_OperatingSystem
-            $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-            $ram = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
-            $gpu = (Get-CimInstance Win32_VideoController | Select-Object -First 1).Name
-            (Get-UI "txtSysInfo").Text = "OS: $($os.Caption) ($($os.OSArchitecture))`nCPU: $($cpu.Name)`nRAM: $ram GB`nGPU: $gpu"
-        } catch {
-            (Get-UI "txtSysInfo").Text = "System information loaded."
-        }
-    })
-
-    # App Installer Map
-    $AppMap = @{
-        chkChrome = "Google.Chrome"; chkFirefox = "Mozilla.Firefox"; chkBrave = "Brave.Brave"
-        chkEdge = "Microsoft.Edge"; chkOperaGX = "Opera.OperaGX"; chkDiscord = "Discord.Discord"
-        chkTelegram = "Telegram.TelegramDesktop"; chkWhatsApp = "WhatsApp.WhatsApp"; chkZoom = "Zoom.Zoom"
-        chkVSCode = "Microsoft.VisualStudioCode"; chkGit = "Git.Git"; chkNodeJS = "OpenJS.NodeJS.LTS"
-        chkPython = "Python.Python.3.12"; chkTerminal = "Microsoft.WindowsTerminal"
-        chkPowerShell7 = "Microsoft.PowerShell"; chkDocker = "Docker.DockerDesktop"
-        chkNotepadPP = "Notepad++.Notepad++"; chkVLC = "VideoLAN.VLC"; chkSpotify = "Spotify.Spotify"
-        chkOBS = "OBSProject.OBSStudio"; chkGIMP = "GIMP.GIMP"; chkShareX = "ShareX.ShareX"
-        chkHandbrake = "HandBrake.HandBrake"; "chk7Zip" = "7zip.7zip"; chkWinRAR = "RARLab.WinRAR"
-        chkPowerToys = "Microsoft.PowerToys"; chkEverything = "voidtools.Everything"
-        chkBitwarden = "Bitwarden.Bitwarden"; chkSteam = "Valve.Steam"
-    }
-
-    (Get-UI "btnInstallApps").Add_Click({
-        $selected = @()
-        foreach ($key in $AppMap.Keys) {
-            $box = Get-UI $key
-            if ($box -and $box.IsChecked) { $selected += $AppMap[$key] }
-        }
-        
-        if ($selected.Count -eq 0) {
-            [System.Windows.MessageBox]::Show("Select at least one application.", "MIDAS", "OK", "Information")
-            return
-        }
-
-        $window.IsEnabled = $false
-        foreach ($app in $selected) {
-            Update-Status "Installing $app..."
-            winget install --id $app --silent --accept-package-agreements --accept-source-agreements --exact
-        }
-        $window.IsEnabled = $true
-        Update-Status "Application installation task completed."
-        [System.Windows.MessageBox]::Show("Selected applications installed successfully.", "MIDAS", "OK", "Information")
-    })
-
-    (Get-UI "btnSelectAllApps").Add_Click({ foreach ($key in $AppMap.Keys) { (Get-UI $key).IsChecked = $true } })
-    (Get-UI "btnDeselectApps").Add_Click({ foreach ($key in $AppMap.Keys) { (Get-UI $key).IsChecked = $false } })
-
-    # Tweaks
-    (Get-UI "btnApplyTweaks").Add_Click({
-        $window.IsEnabled = $false
-        Update-Status "Applying selected system tweaks..."
-
-        if ((Get-UI "twkHighPerf").IsChecked) { powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c }
-        if ((Get-UI "twkDisableTelemetry").IsChecked) {
-            Set-RegDword "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
-            Stop-Service DiagTrack -ErrorAction SilentlyContinue
-            Set-Service DiagTrack -StartupType Disabled -ErrorAction SilentlyContinue
-        }
-        if ((Get-UI "twkDisableGameBar").IsChecked) {
-            Set-RegDword "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR" "AppCaptureEnabled" 0
-            Set-RegDword "HKCU:\System\GameConfigStore" "GameDVR_Enabled" 0
-        }
-        if ((Get-UI "twkDisableHibernation").IsChecked) { powercfg -h off }
-        if ((Get-UI "twkDisableAds").IsChecked) { Set-RegDword "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0 }
-        if ((Get-UI "twkShowFileExt").IsChecked) { Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0 }
-        if ((Get-UI "twkShowHidden").IsChecked) { Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Hidden" 1 }
-        if ((Get-UI "twkDarkMode").IsChecked) {
-            Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
-            Set-RegDword "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
-        }
-        if ((Get-UI "twkClassicRightClick").IsChecked) {
-            New-Item -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Force | Out-Null
-            Set-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Name "(Default)" -Value "" -Force
-        }
-
-        $window.IsEnabled = $true
-        Update-Status "Tweaks successfully applied."
-        [System.Windows.MessageBox]::Show("System tweaks applied.", "MIDAS", "OK", "Information")
-    })
-
-    (Get-UI "btnSelectRecommendedTweaks").Add_Click({
-        (Get-UI "twkHighPerf").IsChecked = $true
-        (Get-UI "twkDisableTelemetry").IsChecked = $true
-        (Get-UI "twkDisableAds").IsChecked = $true
-        (Get-UI "twkShowFileExt").IsChecked = $true
-        (Get-UI "twkDarkMode").IsChecked = $true
-    })
-
-    # Debloat
-    $BloatMap = @{
-        db3DViewer = "*3DViewer*"; dbBingNews = "*BingNews*"; dbFeedbackHub = "*WindowsFeedbackHub*"
-        dbGetHelp = "*GetHelp*"; dbMaps = "*WindowsMaps*"; dbSolitaire = "*SolitaireCollection*"
-        dbMixedReality = "*MixedReality.Portal*"; dbOfficeHub = "*MicrosoftOfficeHub*"
-        dbSkype = "*SkypeApp*"; dbYourPhone = "*YourPhone*"; dbXboxApps = "*Xbox*"
-        dbZune = "*Zune*"
-    }
-
-    (Get-UI "btnRemoveDebloat").Add_Click({
-        $window.IsEnabled = $false
-        foreach ($key in $BloatMap.Keys) {
-            $box = Get-UI $key
-            if ($box -and $box.IsChecked) {
-                $pkg = $BloatMap[$key]
-                Update-Status "Removing $pkg..."
-                Get-AppxPackage -Name $pkg -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
-            }
-        }
-        if ((Get-UI "dbOneDrive").IsChecked) {
-            Update-Status "Uninstalling OneDrive..."
-            taskkill /f /im OneDrive.exe 2>$null
-            if (Test-Path "$env:SystemRoot\System32\OneDriveSetup.exe") { & "$env:SystemRoot\System32\OneDriveSetup.exe" /uninstall }
-        }
-        $window.IsEnabled = $true
-        Update-Status "Selected packages removed."
-        [System.Windows.MessageBox]::Show("Bloatware removal completed.", "MIDAS", "OK", "Information")
-    })
-
-    (Get-UI "btnSafeDebloat").Add_Click({
-        (Get-UI "db3DViewer").IsChecked = $true
-        (Get-UI "dbBingNews").IsChecked = $true
-        (Get-UI "dbFeedbackHub").IsChecked = $true
-        (Get-UI "dbGetHelp").IsChecked = $true
-        (Get-UI "dbSolitaire").IsChecked = $true
-        (Get-UI "dbMixedReality").IsChecked = $true
-    })
-
-    # Repairs & Shortcuts
-    (Get-UI "btnSFC").Add_Click({ Start-Process powershell -ArgumentList "-NoExit -Command sfc /scannow" -Verb RunAs })
-    (Get-UI "btnDISM").Add_Click({ Start-Process powershell -ArgumentList "-NoExit -Command DISM /Online /Cleanup-Image /RestoreHealth" -Verb RunAs })
-    (Get-UI "btnFlushDNS").Add_Click({ ipconfig /flushdns; Update-Status "DNS Cache Flushed." })
-    (Get-UI "btnClearTemp").Add_Click({
-        Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-        Update-Status "Temporary files cleared."
-    })
-    (Get-UI "btnRestorePoint").Add_Click({
-        Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue
-        Checkpoint-Computer -Description "MIDAS Restore Point" -RestorePointType MODIFY_SETTINGS
-        Update-Status "System restore point created."
-    })
-    (Get-UI "btnActivate").Add_Click({ Start-Process powershell -ArgumentList "-Command irm https://get.activated.win | iex" -Verb RunAs })
-    (Get-UI "btnDiskCleanup").Add_Click({ Start-Process cleanmgr })
-    (Get-UI "btnDevManager").Add_Click({ Start-Process devmgmt.msc })
-    (Get-UI "btnServices").Add_Click({ Start-Process services.msc })
-    (Get-UI "btnTaskMgr").Add_Click({ Start-Process taskmgr })
-
-    # Show Window
-    Update-Status "Ready"
+    $window.FindName("btnSFC").Add_Click({ Start-Process powershell "-NoExit -Command sfc /scannow" -Verb RunAs })
+    $window.FindName("btnActivate").Add_Click({ Start-Process powershell "-Command irm https://get.activated.win | iex" -Verb RunAs })
+    $window.FindName("btnFlushDNS").Add_Click({ ipconfig /flushdns })
+    
     $window.ShowDialog() | Out-Null
 
 } catch {
-    Write-Error "MIDAS Error: $_"
-    [System.Windows.MessageBox]::Show("MIDAS Exception: $_", "MIDAS Error", "OK", "Error") | Out-Null
+    [System.Windows.MessageBox]::Show("Error: $_", "MIDAS")
 }
