@@ -4,25 +4,24 @@
 # Sleek Metallic Edition
 # ============================================================
 
+# ── Load Required WPF Assemblies First ──
+Add-Type -AssemblyName PresentationFramework -ErrorAction SilentlyContinue
+Add-Type -AssemblyName PresentationCore -ErrorAction SilentlyContinue
+Add-Type -AssemblyName WindowsBase -ErrorAction SilentlyContinue
+Add-Type -AssemblyName System.Drawing -ErrorAction SilentlyContinue
+
 try {
     # ── Admin Verification ──
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if (-not $isAdmin) {
-        [System.Windows.Forms.MessageBox]::Show(
+        [System.Windows.MessageBox]::Show(
             "Administrator privileges required. Please launch PowerShell as Administrator and run the utility again.",
             "MIDAS",
-            [System.Windows.Forms.MessageBoxButtons]::OK,
-            [System.Windows.Forms.MessageBoxIcon]::Warning
+            "OK",
+            "Warning"
         ) | Out-Null
         exit
     }
-
-    # ── Load Assemblies ──
-    Add-Type -AssemblyName PresentationFramework
-    Add-Type -AssemblyName PresentationCore
-    Add-Type -AssemblyName WindowsBase
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type -AssemblyName System.Drawing
 
     # ============================================================
     # XAML GUI DEFINITION
@@ -391,17 +390,16 @@ try {
 "@
 
     # ============================================================
-    # LOAD GUI & SAFE ANIMATION ENGINE
+    # LOAD GUI & REAL-TIME ANIMATION ENGINE
     # ============================================================
     $reader = New-Object System.Xml.XmlNodeReader $XAML
     $window = [Windows.Markup.XamlReader]::Load($reader)
 
-    # Safe Element Selector
     function Get-UI([string]$name) {
         return $window.FindName($name)
     }
 
-    # Safe Liquid Gold Animation
+    # Real-Time Fluid Liquid Gold Animation
     try {
         $liquidBrush = Get-UI "LiquidGoldBrush"
         if ($liquidBrush) {
@@ -599,6 +597,6 @@ try {
     $window.ShowDialog() | Out-Null
 
 } catch {
-    Write-Error "MIDAS Exception: $_"
-    [System.Windows.Forms.MessageBox]::Show("MIDAS Error: $_", "MIDAS Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error) | Out-Null
+    Write-Error "MIDAS Error: $_"
+    [System.Windows.MessageBox]::Show("MIDAS Exception: $_", "MIDAS Error", "OK", "Error") | Out-Null
 }
